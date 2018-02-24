@@ -2,7 +2,7 @@
 # make-openssl
 # Krzysztof Cieślak K!2018
 # 
-# Usage: ./make-openssl https://www.openssl.org/source/openssl-1.1.0g.tar.gz
+# Usage: .\make-openssl https://www.openssl.org/source/openssl-1.1.0g.tar.gz
 #
 param (
     [string]$Source
