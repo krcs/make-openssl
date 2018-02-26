@@ -20,6 +20,8 @@ Powershell script to compile OpenSSL on Windows x86/x64
 #### Usage example:
   `.\make-openssl.ps1 https://www.openssl.org/source/openssl-1.1.0g.tar.gz`
 
+  `.\make-openssl.ps1 -TryGetLatestSource`
+
 ##### Tested on Windows 10 (x64) with following sources:
 - openssl-1.1.1-pre1 (https://www.openssl.org/source/openssl-1.1.1-pre1.tar.gz)
 - openssl-1.1.0g (https://www.openssl.org/source/openssl-1.1.0g.tar.gz)

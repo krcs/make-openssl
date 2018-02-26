@@ -1,17 +1,27 @@
 #
-# make-openssl
+# Make-OpenSSL
 # Krzysztof Cieślak K!2018
 # 2018-02-26
 #
-# Usage: .\make-openssl https://www.openssl.org/source/openssl-1.1.0g.tar.gz
+# Usage: 
+#       .\make-openssl -Source https://www.openssl.org/source/openssl-1.1.0g.tar.gz
+#       .\make-openssl -TrTryGetLatestSource
 #
 param (
-    [string]$Source
+    [parameter(ParameterSetName="Source", Position=0)]
+    [string]$Source,
+    
+    [switch]$TryGetLatestSource
 )
 
-if (-not $Source) {
-    Write-host -ForeGroundColor Red "Source is not set. Copy link from https://www.openssl.org/source/";
+if (-not $Source -and -not $TryGetLatestSource) {
+    Write-host -ForeGroundColor Red "Source is not set. Copy link from https://www.openssl.org/source/ or run with -TryGetLatestSource parameter.";
     exit;
+}
+
+if ($TryGetLatestSource) {
+    $Source = . .\Get-OpenSSLSourceLinks.ps1 -WithoutPre -WithoutFips | Sort-Object Name -Desc | Select-Object -ExpandProperty Link -First 1
+    write-host "- Source:"$Source
 }
 
 # -=- Variables -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
