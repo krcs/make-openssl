@@ -1,4 +1,4 @@
-# make-openssl
+# Make-OpenSSL
 Powershell script to compile OpenSSL on Windows x86/x64
 
 #### Requirments:
