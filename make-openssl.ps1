@@ -26,7 +26,8 @@ if ($TryGetLatestSource) {
 
 # -=- Variables -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # https://www.openssl.org/community/omc.html
-$fprint = "8657ABB260F056B1E5190839D9C4D26D0E604491"; 
+#$fprint = "8657ABB260F056B1E5190839D9C4D26D0E604491"; # Matt Caswell matt@openssl.org
+$fprint = "7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C"; # Richard Levitte	levitte@openssl.org
 $pgpkey_url = "http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x$fprint";
 
 
@@ -85,7 +86,7 @@ Invoke-WebRequest $pgpkey_url -O $DestinationFilePGP_PublicKey;
 # -=- Veryfication -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 write-host "[2] Verifying"
-
+0
 $sha256 = (Get-FileHash -Algorithm SHA256 $DestinationFile).Hash
 $sha1 = (Get-FileHash -Algorithm SHA1 $DestinationFile).Hash
 
