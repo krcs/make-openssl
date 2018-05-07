@@ -1,16 +1,16 @@
 #
 # Make-OpenSSL
 # Krzysztof Cieślak K!2018
-# 2018-02-26
+# Last update: 2018-05-07
 #
 # Usage: 
 #       .\make-openssl -Source https://www.openssl.org/source/openssl-1.1.0g.tar.gz
-#       .\make-openssl -TrTryGetLatestSource
+#       .\make-openssl -TryGetLatestSource
 #
 param (
     [parameter(ParameterSetName="Source", Position=0)]
     [string]$Source,
-    
+
     [switch]$TryGetLatestSource
 )
 
@@ -26,10 +26,9 @@ if ($TryGetLatestSource) {
 
 # -=- Variables -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # https://www.openssl.org/community/omc.html
-#$fprint = "8657ABB260F056B1E5190839D9C4D26D0E604491"; # Matt Caswell matt@openssl.org
-$fprint = "7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C"; # Richard Levitte	levitte@openssl.org
-$pgpkey_url = "http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x$fprint";
-
+$fprints = 
+    "8657ABB260F056B1E5190839D9C4D26D0E604491", # Matt Caswell matt@openssl.org
+    "7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C"; # Richard Levitte levitte@openssl.org
 
 $SourceSHA256 = $Source + ".sha256";
 $SourceSHA1 = $Source + ".sha1";
@@ -80,13 +79,11 @@ write-host "- Downloading $SourceSHA1 -> $DestinationFileSHA1"
 Invoke-WebRequest $SourceSHA1 -O $DestinationFileSHA1;
 write-host "- Downloading $SourcePGP -> $DestinationFilePGP" 
 Invoke-WebRequest $SourcePGP -O $DestinationFilePGP;
-write-host "- Downloading $pgpkey_url -> $DestinationFilePGP"
-Invoke-WebRequest $pgpkey_url -O $DestinationFilePGP_PublicKey;
 
 # -=- Veryfication -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 write-host "[2] Verifying"
-0
+
 $sha256 = (Get-FileHash -Algorithm SHA256 $DestinationFile).Hash
 $sha1 = (Get-FileHash -Algorithm SHA1 $DestinationFile).Hash
 
@@ -113,13 +110,22 @@ else {
 }
 
 write-host "- PGP:"
-gpg -o $DestinationFilePGP_PublicKey_GPG_format --yes --dearmour $DestinationFilePGP_PublicKey
-$gpgout = gpg --status-fd 1  --no-default-keyring --keyring $DestinationFilePGP_PublicKey_GPG_format --trust-mode always --verify $DestinationFilePGP; 
 
-$pgp_result = 0;
-$gpgout | Where-Object { $_.ToUpper().Contains("GOODSIG") -or $_.ToUpper().Contains("VALIDSIG $fprint") } | ForEach-Object { $pgp_result++; }
+foreach ($fprint in $fprints) {
+    $pgpkey_url = "http://pool.sks-keyservers.net:11371/pks/lookup?op=get&search=0x$fprint";
 
-$pgp_result = $pgp_result -eq 2;
+    write-host "- Downloading $pgpkey_url -> $DestinationFilePGP"
+    Invoke-WebRequest $pgpkey_url -O $DestinationFilePGP_PublicKey;
+
+    gpg -o $DestinationFilePGP_PublicKey_GPG_format --yes --dearmour $DestinationFilePGP_PublicKey
+    $gpgout = gpg --status-fd 1  --no-default-keyring --keyring $DestinationFilePGP_PublicKey_GPG_format --trust-mode always --verify $DestinationFilePGP; 
+
+    $pgp_result = 0;
+    $gpgout | Where-Object { $_.ToUpper().Contains("GOODSIG") -or $_.ToUpper().Contains("VALIDSIG $fprint") } | ForEach-Object { $pgp_result++; }
+    $pgp_result = $pgp_result -eq 2;
+
+    if ($pgp_result) { break; }
+}
 
 if ($pgp_result) {
     write-host "- PGP: $pgp_result";
