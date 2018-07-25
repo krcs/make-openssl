@@ -29,5 +29,5 @@ Powershell script for compiling OpenSSL on Windows x86/x64.
 ##### Tested on Windows 10 (x64) with following sources:
 - openssl-1.1.0h (https://www.openssl.org/source/openssl-1.1.0h.tar.gz)
 - openssl-1.1.1-pre8-dev (use make-openssl-github-master.ps1)
-- openssl-1.1.1-pre8 (https://www.openssl.org/source/openssl-1.1.1-pre6.tar.gz)
+- openssl-1.1.1-pre8 (https://www.openssl.org/source/openssl-1.1.1-pre8.tar.gz)
 - openssl-1.1.0g (https://www.openssl.org/source/openssl-1.1.0g.tar.gz)
