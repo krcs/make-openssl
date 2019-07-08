@@ -15,6 +15,8 @@ $DestinationFolder_x86 = Join-Path $CurrentDir "openssl-github-master-x86-source
 $DestinationFolder_x64 = Join-Path $CurrentDir "openssl-github-master-x64-source"
 
 $vcvarsall = 
+    # Visual Studio 2019
+    "c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat",
     # Visual Studio 2017
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat",
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
