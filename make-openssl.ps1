@@ -43,7 +43,9 @@ $DestinationFilePGP = Join-Path $CurrentDir $([io.path]::GetFileName($SourcePGP)
 $DestinationFilePGP_PublicKey = Join-Path $CurrentDir "publickey.asc" 
 $DestinationFilePGP_PublicKey_GPG_format = Join-Path $CurrentDir "publickey.gpg";
 
-$vcvarsall = 
+$vcvarsall =
+    # Visual Studio 2019
+    "c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat",
     # Visual Studio 2017
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat",
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
