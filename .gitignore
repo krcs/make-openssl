@@ -1,2 +1,5 @@
-/openssl-*/
-/.vscode/
+/*
+!Get-OpenSSLSourceLinks.ps1
+!make-openssl.ps1
+!make-openssl-github-master.ps1
+!README.md
