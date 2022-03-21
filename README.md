@@ -1,11 +1,7 @@
 # make-openssl
 Powershell script for compiling OpenSSL on Windows x86/x64.
 
-<<<<<<< HEAD
-#### Requirements:
-=======
 #### Requirements
->>>>>>> 46725d24b11f3b9f617ed8b0c293da5d6f12acfb
 - Perl (https://www.activestate.com/activeperl)
 - NASM (http://www.nasm.us/)
 - 7zip (http://www.7-zip.org/)
@@ -44,4 +40,3 @@ Powershell script for compiling OpenSSL on Windows x86/x64.
 
 ##### Tested on Windows 10 (x64)
 - openssl-1.1.1h (https://www.openssl.org/source/openssl-1.1.1k.tar.gz)
->>>>>>> 46725d24b11f3b9f617ed8b0c293da5d6f12acfb
