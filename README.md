@@ -1,11 +1,7 @@
 # make-openssl
 Powershell script for compiling OpenSSL on Windows x86/x64.
 
-<<<<<<< HEAD
-#### Requirements:
-=======
 #### Requirements
->>>>>>> 46725d24b11f3b9f617ed8b0c293da5d6f12acfb
 - Perl (https://www.activestate.com/activeperl)
 - NASM (http://www.nasm.us/)
 - 7zip (http://www.7-zip.org/)
@@ -26,12 +22,13 @@ Powershell script for compiling OpenSSL on Windows x86/x64.
   ```      
 
 #### Usage example
-  `.\make-openssl.ps1 https://www.openssl.org/source/openssl-1.1.1k.tar.gz`
+  `.\make-openssl.ps1 https://www.openssl.org/source/openssl-1.1.1n.tar.gz`
 
   `.\make-openssl.ps1 -TryGetLatestSource`
 
 <<<<<<< HEAD
 ##### Tested on Windows 10 (x64) with following sources:
+- openssl-1.1.1n (https://www.openssl.org/source/openssl-1.1.1n.tar.gz)
 - openssl-1.1.0h (https://www.openssl.org/source/openssl-1.1.0h.tar.gz)
 - openssl-1.1.1-pre5 (https://www.openssl.org/source/openssl-1.1.1-pre5.tar.gz)
 - openssl-1.1.1-pre4 (https://www.openssl.org/source/openssl-1.1.1-pre4.tar.gz)
@@ -43,5 +40,4 @@ Powershell script for compiling OpenSSL on Windows x86/x64.
   `.\make-openssl-github-master.ps1`
 
 ##### Tested on Windows 10 (x64)
-- openssl-1.1.1h (https://www.openssl.org/source/openssl-1.1.1k.tar.gz)
->>>>>>> 46725d24b11f3b9f617ed8b0c293da5d6f12acfb
+- openssl-1.1.1n (https://www.openssl.org/source/openssl-1.1.1n.tar.gz)

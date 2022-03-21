@@ -1,10 +1,10 @@
 #
 # Make-OpenSSL
-# Krzysztof Cieślak K!2018
-# Last update: 2018-05-07
+# Krzysztof Cieślak K!2022
+# Last update: 2022-03-21 
 #
 # Usage: 
-#       .\make-openssl -Source https://www.openssl.org/source/openssl-1.1.0g.tar.gz
+#       .\make-openssl -Source https://www.openssl.org/source/openssl-1.1.1n.tar.gz
 #       .\make-openssl -TryGetLatestSource
 #
 param (
