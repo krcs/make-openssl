@@ -1,5 +1,7 @@
 /*
 !Get-OpenSSLSourceLinks.ps1
 !make-openssl.ps1
+!make-openssl-lite.ps1
 !make-openssl-github-master.ps1
+!make-openssl-github-master-lite.ps1
 !README.md
