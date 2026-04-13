@@ -2,7 +2,7 @@
 Powershell script for compiling OpenSSL on Windows x86/x64.
 
 #### Requirements
-- Perl (https://www.activestate.com/activeperl)
+- Perl (https://strawberryperl.com/)
 - NASM (http://www.nasm.us/)
 - 7zip (http://www.7-zip.org/)
 - GPG (https://www.gpg4win.org/)
