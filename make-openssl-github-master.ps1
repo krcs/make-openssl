@@ -1,9 +1,9 @@
 #
 # Make-OpenSSL
 # Krzysztof Cieślak K!2018
-# Last update: 2018-05-07
+# Last update: 2026-04-12
 #
-# Usage: 
+# Usage:
 #       .\make-openssl-github-master
 #
 # -=- Variables -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -14,18 +14,18 @@ $Source = "https://github.com/openssl/openssl.git";
 $DestinationFolder_x86 = Join-Path $CurrentDir "openssl-github-master-x86-source"
 $DestinationFolder_x64 = Join-Path $CurrentDir "openssl-github-master-x64-source"
 
-$vcvarsall = 
+$vcvarsall =
     # Visual Studio 2019
     "c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat",
     # Visual Studio 2017
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat",
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
-        
+
 # -=- Functions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 function RemoveFile ($path) {
     Remove-Item -Force $path -ErrorVariable Err -ErrorAction SilentlyContinue;
-} 
+}
 
 function RemoveDirectory ($path) {
     Remove-Item -R -Force $path -ErrorVariable Err -ErrorAction SilentlyContinue;
@@ -56,7 +56,7 @@ write-host "[2] Building"
 
 $CurrentDriveLetter = Split-Path -Path $CurrentDir -Qualifier
 
-$fileName = $($null, $second_line, $null = Get-Content "$DestinationFolder_x86\readme"; $second_line).Trim().Replace(" ","-").ToLower()
+$fileName = "openssl"
 
 # x86 version -=-
 $directory_x86_release = join-path $CurrentDir $($fileName + "-x86-release");

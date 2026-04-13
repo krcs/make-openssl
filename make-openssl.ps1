@@ -1,58 +1,45 @@
 #
 # Make-OpenSSL
 # Krzysztof Cieślak K!2022
-# Last update: 2022-03-21 
+# Last update: 2026-04-12
 #
-# Usage: 
-#       .\make-openssl -Source https://www.openssl.org/source/openssl-1.1.1n.tar.gz
-#       .\make-openssl -TryGetLatestSource
+# Usage:
+#       .\make-openssl -Source https://github.com/openssl/openssl/releases/download/openssl-3.6.2/openssl-3.6.2.tar.gz
 #
 param (
     [parameter(ParameterSetName="Source", Position=0)]
-    [string]$Source,
-
-    [switch]$TryGetLatestSource
+    [string]$Source
 )
 
-if (-not $Source -and -not $TryGetLatestSource) {
-    Write-host -ForeGroundColor Red "Source is not set. Copy link from https://www.openssl.org/source/ or run with -TryGetLatestSource parameter.";
+if (-not $Source) {
+    Write-host -ForeGroundColor Red "Source is not set. Copy link from https://www.openssl.org/source/";
     exit;
 }
 
-if ($TryGetLatestSource) {
-    $Source = . .\Get-OpenSSLSourceLinks.ps1 -WithoutPre -WithoutFips | Sort-Object Name -Desc | Select-Object -ExpandProperty Link -First 1
-    write-host "- Source:"$Source
-}
-
 # -=- Variables -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# https://www.openssl.org/community/omc.html
-$fprints = 
-    "8657ABB260F056B1E5190839D9C4D26D0E604491", # Matt Caswell matt@openssl.org
-    "7953AC1FBC3DC8B3B292393ED5E9E43F7DF9EE8C"; # Richard Levitte levitte@openssl.org
+$fprints = "BA5473A2B0587B07FB27CF2D216094DFD0CB81EF";
 
 $SourceSHA256 = $Source + ".sha256";
-$SourceSHA1 = $Source + ".sha1";
 $SourcePGP = $Source + ".asc";
 
 $CurrentDir = $PSScriptRoot;
 
 $DestinationFile = Join-Path $CurrentDir $([io.path]::GetFileName($Source));
 $DestinationFileSHA256 = Join-Path $CurrentDir $([io.path]::GetFileName($SourceSHA256));
-$DestinationFileSHA1 = Join-Path $CurrentDir $([io.path]::GetFileName($SourceSHA1));
 $DestinationFilePGP = Join-Path $CurrentDir $([io.path]::GetFileName($SourcePGP));
-$DestinationFilePGP_PublicKey = Join-Path $CurrentDir "publickey.asc" 
+$DestinationFilePGP_PublicKey = Join-Path $CurrentDir "publickey.asc"
 $DestinationFilePGP_PublicKey_GPG_format = Join-Path $CurrentDir "publickey.gpg";
 
-$vcvarsall = 
+$vcvarsall =
     # Visual Studio 2017
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat",
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat"
-        
+
 # -=- Functions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 function RemoveFile ($path) {
     Remove-Item -Force $path -ErrorVariable Err -ErrorAction SilentlyContinue;
-} 
+}
 
 function RemoveDirectory ($path) {
     Remove-Item -R -Force $path -ErrorVariable Err -ErrorAction SilentlyContinue;
@@ -72,26 +59,23 @@ if ($vcvarsall_path -eq 0) { Write-host -ForeGroundColor Red "vcvarsall.bat not 
 
 write-host "[1] Downloading"
 write-host "- Downloading $Source -> $DestinationFile"
-Invoke-WebRequest $Source -O $DestinationFile;
+Invoke-WebRequest $Source -OutFile $DestinationFile;
 write-host "- Downloading $SourceSHA256 -> $DestinationFileSHA256"
-Invoke-WebRequest $SourceSHA256 -O $DestinationFileSHA256;
-write-host "- Downloading $SourceSHA1 -> $DestinationFileSHA1"
-Invoke-WebRequest $SourceSHA1 -O $DestinationFileSHA1;
-write-host "- Downloading $SourcePGP -> $DestinationFilePGP" 
-Invoke-WebRequest $SourcePGP -O $DestinationFilePGP;
+Invoke-WebRequest $SourceSHA256 -OutFile $DestinationFileSHA256;
+write-host "- Downloading $SourcePGP -> $DestinationFilePGP"
+Invoke-WebRequest $SourcePGP -OutFile $DestinationFilePGP;
 
 # -=- Veryfication -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 write-host "[2] Verifying"
 
 $sha256 = (Get-FileHash -Algorithm SHA256 $DestinationFile).Hash
-$sha1 = (Get-FileHash -Algorithm SHA1 $DestinationFile).Hash
 
-$sha256_from_file = (Get-Content $DestinationFileSHA256).ToUpper();
-$sha1_from_file = (Get-Content $DestinationFileSHA1).ToUpper();
+$sha256_from_file = (Get-Content $DestinationFileSHA256 -First 1).ToUpper().Split(" ")[0];
 
 $sha256_result = $sha256_from_file.Equals($sha256);
-$sha1_result = $sha1_from_file.Equals($sha1); 
+
+$sha256_from_file
 
 if ($sha256_result) {
     write-host "- SHA256: $sha256_result";
@@ -101,25 +85,17 @@ else {
     exit;
 }
 
-if ($sha1_result) {
-    write-host "- SHA1: $sha1_result";
-}
-else {
-    Write-host -ForeGroundColor Red "SHA1 verification error. Hashes doesn't match.";
-    exit;
-}
-
 write-host "- PGP:"
 
 foreach ($fprint in $fprints) {
     $pgpkey_url = "https://keys.openpgp.org/vks/v1/by-fingerprint/$fprint";
-    
+
 
     write-host "- Downloading $pgpkey_url -> $DestinationFilePGP"
-    Invoke-WebRequest $pgpkey_url -O $DestinationFilePGP_PublicKey;
+    Invoke-WebRequest $pgpkey_url -OutFile $DestinationFilePGP_PublicKey;
 
     gpg -o $DestinationFilePGP_PublicKey_GPG_format --yes --dearmour $DestinationFilePGP_PublicKey
-    $gpgout = gpg --status-fd 1  --no-default-keyring --keyring $DestinationFilePGP_PublicKey_GPG_format --trust-mode always --verify $DestinationFilePGP; 
+    $gpgout = gpg --status-fd 1  --no-default-keyring --keyring $DestinationFilePGP_PublicKey_GPG_format --trust-mode always --verify $DestinationFilePGP;
 
     $pgp_result = 0;
     $gpgout | Where-Object { $_.ToUpper().Contains("GOODSIG") -or $_.ToUpper().Contains("VALIDSIG $fprint") } | ForEach-Object { $pgp_result++; }
@@ -151,7 +127,7 @@ RemoveDirectory $directory_x64_source;
 7z x -y $DestinationFile > $null 2>&1
 
 write-host "- extracting tar for x86 source"
-7z x -y -aoa $tar_fileName > $null 2>&1  
+7z x -y -aoa $tar_fileName > $null 2>&1
 
 Rename-Item $filename $directory_x86_source;
 
@@ -187,9 +163,8 @@ write-host "[5] Cleaning";
 RemoveFile $DestinationFile;
 RemoveFile $(join-path $currentDir $tar_fileName);
 RemoveFile $DestinationFileSHA256;
-RemoveFile $DestinationFileSHA1;
 RemoveFile $DestinationFilePGP;
-RemoveFile $DestinationFilePGP_PublicKey; 
+RemoveFile $DestinationFilePGP_PublicKey;
 RemoveFile $DestinationFilePGP_PublicKey_GPG_format;
 
 RemoveDirectory $directory_x86_source;
